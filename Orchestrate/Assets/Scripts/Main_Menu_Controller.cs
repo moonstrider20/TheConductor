@@ -21,7 +21,7 @@ public class Main_Menu_Controller : MonoBehaviour
     // The StartGame() function loads the "Game" scene, which should be the actual game content.
     public void StartGame()
     {
-        SceneManager.LoadScene("Fight_Scene_1_Android_Version");
+        SceneManager.LoadScene(1);
     }
 
     // The Credits() function loads the "Credits" scene, which should contain the instructions for how to play the game.

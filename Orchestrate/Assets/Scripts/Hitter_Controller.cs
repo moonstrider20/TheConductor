@@ -6,13 +6,16 @@ public class Hitter_Controller : MonoBehaviour
 
     void Update()
     {
+        Vector3 worldPosition;
+        float x = gameObject.transform.position.x, y = gameObject.transform.position.y, z = gameObject.transform.position.z;
+
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
 
             Vector2 position = touch.position;
 
-            Vector3 worldPosition = new Vector3(0, 0, 0);
+            worldPosition = new Vector3(0, 0, 0);
 
             for (int i = 0; i < Input.touchCount; i++)
             {
@@ -22,8 +25,22 @@ public class Hitter_Controller : MonoBehaviour
                 }
             }
 
-            float x = gameObject.transform.position.x, y = gameObject.transform.position.y, z = gameObject.transform.position.z;
-
+            if ( ( (worldPosition.x > x - 1f) && (worldPosition.x < x + 1f) ) && ( (worldPosition.y > y - 1f) && (worldPosition.y < y + 1f) ) )
+            {
+                DestroyOther();
+            }
+        }
+        else
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            }
+            else
+            {
+                worldPosition = new Vector3(0, 0, 0);
+            }
+            
             if ( ( (worldPosition.x > x - 1f) && (worldPosition.x < x + 1f) ) && ( (worldPosition.y > y - 1f) && (worldPosition.y < y + 1f) ) )
             {
                 DestroyOther();
