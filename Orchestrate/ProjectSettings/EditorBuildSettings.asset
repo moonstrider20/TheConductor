@@ -9,6 +9,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Main_Menu.unity
     guid: d24bea3998f28f94ea1b4ffd824725a9
   - enabled: 1
-    path: Assets/Scenes/Fight_Scene_1_Android_Version.unity
-    guid: 7eeb976f59493324c916462a3c697d68
+    path: Assets/Scenes/Score_Based_Level.unity
+    guid: 66f347c8190e2bd449c8def2c57a818c
+  - enabled: 1
+    path: Assets/Scenes/Time_Based_Level.unity
+    guid: 46bb83df6973640438704bdb1fedf0da
+  - enabled: 1
+    path: Assets/Scenes/Endless_Level.unity
+    guid: 7c09096929670df4b883b4813109ab0e
   m_configObjects: {}

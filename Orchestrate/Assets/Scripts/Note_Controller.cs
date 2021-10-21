@@ -13,7 +13,7 @@ public class Note_Controller : MonoBehaviour
 
     void Update()
     {
-        if (GameController.Health <= 0 || GameController.Score >= GameController.ScoreMaximumValue)
+        if (GameController.Health <= 0 || GameController.WinConditionAchieved)
             Destroy(gameObject);
     }
     private void OnTriggerEnter2D(Collider2D other)

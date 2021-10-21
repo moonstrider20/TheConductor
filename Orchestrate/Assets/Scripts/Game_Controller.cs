@@ -9,7 +9,8 @@ public class Game_Controller : MonoBehaviour
     [Tooltip("This is the actual fill that will fill up the health bar, so to say.")]
     public Image HealthBarFill;
 
-    [Tooltip("The amount of points needed to win the level.")]
+    //This is the amount of points needed to win the level. It is randomly set.
+    [HideInInspector]
     public int ScoreMaximumValue;
 
     [Tooltip("This is the maximum amount of how many hits the player can take. This number can be adjusted freely and the health bar should decrease / increase accordingly.")]
@@ -22,6 +23,18 @@ public class Game_Controller : MonoBehaviour
     // This is the player's current score.
     [HideInInspector]
     public int Score = 0;
+
+    [Tooltip("This is the type of level that the scene is. 1 for Score, 2 for Timed, and 3 for Endless.")]
+    public int Level_Type;
+
+    [Tooltip("This is the maximum amount of time for the level. This is only useful in the \"Timed\" level.")]
+    public float MaxTime;
+
+    [Tooltip("This is how fast the notes move.")]
+    public float NoteSpeed;
+
+    [HideInInspector]
+    public float TimeRemaining;
 
     [Tooltip("These are the possible spawn locations for the notes.")]
 
@@ -45,18 +58,61 @@ public class Game_Controller : MonoBehaviour
     [Tooltip("This is \"Beats Per Minute\" (or BPM), essentially this is how many notes are spawned per minute.")]
     public int BPM;
 
+    // This is if the win condition for the level has been achieved yet or not
+    [HideInInspector]
+    public bool WinConditionAchieved = false;
+
     void Awake()
     {
         HealthBarFill.fillAmount = 1;
         MissSFX = gameObject.GetComponent<AudioSource>();
         TapSFX = GameObject.Find("TapSFX").GetComponent<AudioSource>();
         Health = HealthMax;
+        TimeRemaining = MaxTime;
+        ScoreMaximumValue = Random.Range(15, 31);
+        ScoreMaximumValue *= 100;
         StartCoroutine("SpawnNotes");
+    }
+
+    void Update()
+    {
+        TimeRemaining -= Time.deltaTime;
+
+        if ( !WinConditionAchieved )
+        {
+            UpdateWinCondition();
+            UpdateScoreText();
+        }
+        else
+        {
+            UpdateSuccessfulText("You win! Restart or Quit?");
+        }
+        
+    }
+
+    void FixedUpdate()
+    {
+        if ( !WinConditionAchieved && Health > 0 && Level_Type == 3 )
+            NoteSpeed += 0.00004f;
+    }
+
+    public void UpdateWinCondition()
+    {
+        if ( Level_Type == 1 )
+        {
+            if ( Score >= ScoreMaximumValue )
+                WinConditionAchieved = true;
+        }
+        else if ( Level_Type == 2 )
+        {
+            if ( Mathf.Round(TimeRemaining) <= 0 )
+                WinConditionAchieved = true;
+        }
     }
 
     public IEnumerator SpawnNotes()
     {
-        if ( Health > 0 && Score < ScoreMaximumValue)
+        if ( Health > 0 && !WinConditionAchieved )
         {
             
         yield return new WaitForSeconds(60 / BPM);
@@ -92,7 +148,7 @@ public class Game_Controller : MonoBehaviour
                 break;
         }
 
-        if (Health > 0 && Score < ScoreMaximumValue)
+        if ( Health > 0 && !WinConditionAchieved )
             StartCoroutine("SpawnNotes");
         }
     }
@@ -108,21 +164,42 @@ public class Game_Controller : MonoBehaviour
         else if ( Health == 0 )
         {
             HealthBarFill.fillAmount = 0;
-            SuccessfulText.text = "You lost. Restart or quit?";
-            RestartButton.SetActive(true);
-            QuitButton.SetActive(true);
+            UpdateSuccessfulText("You lost. Restart or quit?");
         }
     }
 
     public void ChangeScore(int value)
     {
         Score += value;
-        ScoreText.text = ($"Score: {Score}");
-        if (Score >= 1000)
+        
+        if (Score >= ScoreMaximumValue && Level_Type == 1)
         {
             SuccessfulText.text = "You won! Restart or quit?";
             RestartButton.SetActive(true);
             QuitButton.SetActive(true);
+        }
+    }
+
+    private void UpdateSuccessfulText(string newText)
+    {
+        SuccessfulText.text = newText;
+        RestartButton.SetActive(true);
+        QuitButton.SetActive(true);
+    }
+
+    private void UpdateScoreText()
+    {
+        switch ( Level_Type )
+        {
+            case 1:
+                ScoreText.text = ($"Score: {Score} / {ScoreMaximumValue}");
+                break;
+            case 2:
+                ScoreText.text = ($"Time remaining: {Mathf.Round(TimeRemaining)}");
+                break;
+            default:
+                ScoreText.text = ($"Score: {Score}");
+                break;
         }
     }
 
