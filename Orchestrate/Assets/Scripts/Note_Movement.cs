@@ -13,7 +13,7 @@ public class Note_Movement : MonoBehaviour
     }
     void FixedUpdate()
     {
-        transform.position = new Vector2(transform.position.x + speed, transform.position.y);
+        transform.position = new Vector2(transform.position.x, transform.position.y - speed);
     }
     private void OnTriggerExit2D(Collider2D other)
     {

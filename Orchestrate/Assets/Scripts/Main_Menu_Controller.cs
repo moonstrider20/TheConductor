@@ -10,17 +10,23 @@ public class Main_Menu_Controller : MonoBehaviour
     [Tooltip("'MainMenuCanvas' is the Canvas for the Main Menu. 'CreditsMenuCanvas' is the Canvas for the Credits Menu inside of the Main Menu.")]
     public Canvas MainMenuCanvas, CreditsMenuCanvas, SettingsMenuCanvas;
 
+    private AudioSource ButtonClickSFX;
+
+    private bool GameJustStarted = true;
+
     void Start()
     {
         // DO NOT REMOVE THESE TWO LINES OF CODE UNDER ANY CIRCUMSTANCE, THEY APPEAR TO BE THE ONLY WAY TO HAVE THE MAIN MENU BUTTONS SHOW ON APP START FOR SOME REASON. I DO NOT KNOW WHY.
         MainMenuCanvas.enabled = false;
         MainMenuCanvas.enabled = true;
+        ButtonClickSFX = GameObject.Find("ButtonClickSFX").GetComponent<AudioSource>();
         SwitchCanvas();
     }
 
     // The StartGame() function loads the "Game" scene, which should be the actual game content.
     public void StartGame()
     {
+        ButtonClickSFX.Play();
         SceneManager.LoadScene(1);
     }
 
@@ -47,6 +53,11 @@ public class Main_Menu_Controller : MonoBehaviour
 
     public void SwitchCanvas()
     {
+        if (!GameJustStarted)
+            ButtonClickSFX.Play();
+
+        GameJustStarted = false;
+
         switch( MenuSelector )
         {
             case 1:

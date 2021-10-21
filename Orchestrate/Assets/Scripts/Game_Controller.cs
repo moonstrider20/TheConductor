@@ -6,37 +6,51 @@ using TMPro;
 
 public class Game_Controller : MonoBehaviour
 {
-    public Slider HealthBar;
-
+    [Tooltip("This is the actual fill that will fill up the health bar, so to say.")]
     public Image HealthBarFill;
 
-    public Gradient HealthBarGradient;
+    [Tooltip("The amount of points needed to win the level.")]
+    public int ScoreMaximumValue;
 
-    [Tooltip("Health is how many times the player can miss a note and ScoreMaximumValue is the amount of points needed to win the level.")]
-    public int Health, ScoreMaximumValue;
+    [Tooltip("This is the maximum amount of how many hits the player can take. This number can be adjusted freely and the health bar should decrease / increase accordingly.")]
+    public int HealthMax;
 
+    // This is how many more hits the player can take currently.
+    [HideInInspector]
+    public int Health;
+
+    // This is the player's current score.
     [HideInInspector]
     public int Score = 0;
 
-    public GameObject Note;
+    [Tooltip("These are the possible spawn locations for the notes.")]
 
     public Transform NoteSpawn1, NoteSpawn2, NoteSpawn3, NoteSpawn4, NoteSpawn5;
 
+    [Tooltip("The Restart Button is the button that will allow the player to restart the level and the \"Quit\" button will allow the player to quit out of the application.")]
     public GameObject RestartButton, QuitButton;
 
+    [Tooltip("This is an array of the Note prefabs. It MUST contain notes in the same order as the cogs. You can change the location of the cogs around all you like, but if the first cog is green, then the first object in this array must be the Green Note prefab. If the second cog is red, then the second object in this array must be the Red Note prefab. Etc.")]
+    public GameObject[] Notes;
+
+    [Tooltip("\"SuccessfulText\" is the text that appears when you successfully complete a level and \"ScoreText\" is the player's current score.")]
     public TextMeshProUGUI SuccessfulText, ScoreText;
 
+    [Tooltip("This is the sound effect for the player missing a note.")]
     private AudioSource MissSFX;
+
+    // This is the sound effect for the player tapping a note.
+    private AudioSource TapSFX;
 
     [Tooltip("This is \"Beats Per Minute\" (or BPM), essentially this is how many notes are spawned per minute.")]
     public int BPM;
 
     void Awake()
     {
-        HealthBar.maxValue = Health;
-        HealthBar.value = Health;
-        HealthBarFill.color = HealthBarGradient.Evaluate(1f);
+        HealthBarFill.fillAmount = 1;
         MissSFX = gameObject.GetComponent<AudioSource>();
+        TapSFX = GameObject.Find("TapSFX").GetComponent<AudioSource>();
+        Health = HealthMax;
         StartCoroutine("SpawnNotes");
     }
 
@@ -49,27 +63,32 @@ public class Game_Controller : MonoBehaviour
 
         int randomNumber = Random.Range(1, 6);
 
+        Vector3 tempVector;
+        Quaternion tempQuaternion = new Quaternion (0f, 0f, 0f, 0f);
+
         switch(randomNumber)
         {
             case 1:
-                Instantiate(Note, NoteSpawn1);
+                tempVector = new Vector3(NoteSpawn1.position.x - 0.0625f, NoteSpawn1.position.y, NoteSpawn1.position.z);
+                Instantiate(Notes[0], tempVector, tempQuaternion);
                 break;
 
             case 2:
-                Instantiate(Note, NoteSpawn2);
+                tempVector = new Vector3(NoteSpawn2.position.x - 0.0625f, NoteSpawn2.position.y, NoteSpawn2.position.z);
+                Instantiate(Notes[1], tempVector, tempQuaternion);
                 break;
 
             case 3:
-                Instantiate(Note, NoteSpawn3);
+                Instantiate(Notes[2], NoteSpawn3);
                 break;
 
             case 4:
-                Instantiate(Note, NoteSpawn4);
+                Instantiate(Notes[3], NoteSpawn4);
                 break;
 
 
             default:
-                Instantiate(Note, NoteSpawn5);
+                Instantiate(Notes[4], NoteSpawn5);
                 break;
         }
 
@@ -82,15 +101,13 @@ public class Game_Controller : MonoBehaviour
     {
         Health += value;
 
-        if ( Health > 0 )
-        {
-            HealthBar.value = Health;
-            HealthBarFill.color = HealthBarGradient.Evaluate(HealthBar.normalizedValue);
-        }
+        if ( Health > 0 && value < 0 )
+            HealthBarFill.fillAmount -= (1f / HealthMax);
+        else if ( Health > 0 && value > 0 )
+            HealthBarFill.fillAmount += (1f / HealthMax);
         else if ( Health == 0 )
         {
-            HealthBar.value = 0;
-            HealthBarFill.color = HealthBarGradient.Evaluate(HealthBar.normalizedValue);
+            HealthBarFill.fillAmount = 0;
             SuccessfulText.text = "You lost. Restart or quit?";
             RestartButton.SetActive(true);
             QuitButton.SetActive(true);
@@ -117,6 +134,11 @@ public class Game_Controller : MonoBehaviour
     public void PlayMissSFX()
     {
         MissSFX.Play();
+    }
+
+    public void PlayHitSFX()
+    {
+        TapSFX.Play();
     }
 
     public void Quit()
