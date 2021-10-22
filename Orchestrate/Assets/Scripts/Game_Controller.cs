@@ -40,10 +40,10 @@ public class Game_Controller : MonoBehaviour
 
     public Transform NoteSpawn1, NoteSpawn2, NoteSpawn3, NoteSpawn4, NoteSpawn5;
 
-    [Tooltip("The Restart Button is the button that will allow the player to restart the level and the \"Quit\" button will allow the player to quit out of the application.")]
-    public GameObject RestartButton, QuitButton;
+    [Tooltip("The Restart Button is the button that will allow the player to restart the level, the \"Quit\" button will allow the player to quit out of the application, and the \"Main Menu\" button allows for quick return to the Main Menu.")]
+    public GameObject RestartButton, QuitButton, Main_Menu_Button;
 
-    [Tooltip("This is an array of the Note prefabs. It MUST contain notes in the same order as the cogs. You can change the location of the cogs around all you like, but if the first cog is green, then the first object in this array must be the Green Note prefab. If the second cog is red, then the second object in this array must be the Red Note prefab. Etc.")]
+    [Tooltip("This is an array of the Note prefabs.")]
     public GameObject[] Notes;
 
     [Tooltip("\"SuccessfulText\" is the text that appears when you successfully complete a level and \"ScoreText\" is the player's current score.")]
@@ -119,19 +119,14 @@ public class Game_Controller : MonoBehaviour
 
         int randomNumber = Random.Range(1, 6);
 
-        Vector3 tempVector;
-        Quaternion tempQuaternion = new Quaternion (0f, 0f, 0f, 0f);
-
         switch(randomNumber)
         {
             case 1:
-                tempVector = new Vector3(NoteSpawn1.position.x - 0.0625f, NoteSpawn1.position.y, NoteSpawn1.position.z);
-                Instantiate(Notes[0], tempVector, tempQuaternion);
+                Instantiate(Notes[0], NoteSpawn1);
                 break;
 
             case 2:
-                tempVector = new Vector3(NoteSpawn2.position.x - 0.0625f, NoteSpawn2.position.y, NoteSpawn2.position.z);
-                Instantiate(Notes[1], tempVector, tempQuaternion);
+                Instantiate(Notes[1], NoteSpawn2);
                 break;
 
             case 3:
@@ -183,6 +178,7 @@ public class Game_Controller : MonoBehaviour
     private void UpdateSuccessfulText(string newText)
     {
         SuccessfulText.text = newText;
+        Main_Menu_Button.SetActive(true);
         RestartButton.SetActive(true);
         QuitButton.SetActive(true);
     }
@@ -206,6 +202,11 @@ public class Game_Controller : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void MainMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
     public void PlayMissSFX()

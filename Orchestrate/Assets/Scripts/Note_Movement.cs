@@ -1,5 +1,11 @@
 using UnityEngine;
 
+/*
+
+    Code created by Seth Grimes for DIG4715 Casual Game Production, 
+
+*/
+
 public class Note_Movement : MonoBehaviour
 {
     private AudioSource IncorrectSFX;
@@ -19,8 +25,9 @@ public class Note_Movement : MonoBehaviour
     {
         if (!gameObject.GetComponent<Note_Controller>().GetJustDestroyed())
         {
-            GameObject.Find("GameController").GetComponent<Game_Controller>().PlayMissSFX();
-            GameObject.Find("GameController").GetComponent<Game_Controller>().ChangeHealth(-1);
+            Handheld.Vibrate();
+            GameController.PlayMissSFX();
+            GameController.ChangeHealth(-1);
         }
 
         Destroy(gameObject);

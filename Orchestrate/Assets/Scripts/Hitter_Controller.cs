@@ -1,8 +1,21 @@
+using System.Collections;
 using UnityEngine;
 
 public class Hitter_Controller : MonoBehaviour
 {
+    [HideInInspector]
     public GameObject NextNote = null;
+    
+    // This is the game object's Sprite Renderer component.
+    private SpriteRenderer Sprite_Renderer;
+
+    [Tooltip("This is all of the possible states of the hitter, e.g. \"inactive\" and \"active\".")]
+    public Sprite[] Hitter_States;
+
+    void Start()
+    {
+        Sprite_Renderer = GetComponent<SpriteRenderer>();
+    }
 
     void Update()
     {
@@ -27,11 +40,13 @@ public class Hitter_Controller : MonoBehaviour
 
             if ( ( (worldPosition.x > x - 1f) && (worldPosition.x < x + 1f) ) && ( (worldPosition.y > y - 1f) && (worldPosition.y < y + 1f) ) )
             {
+                SwitchStates(true);
                 DestroyOther();
             }
         }
         else
         {
+            SwitchStates(false);
             if (Input.GetMouseButtonDown(0))
             {
                 worldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -45,6 +60,19 @@ public class Hitter_Controller : MonoBehaviour
             {
                 DestroyOther();
             }
+        }
+    }
+
+    private void SwitchStates(bool value)
+    {
+        switch(value)
+        {
+            case false:
+                Sprite_Renderer.sprite = Hitter_States[0];
+                break;
+            default:
+                Sprite_Renderer.sprite = Hitter_States[1];
+                break;
         }
     }
 

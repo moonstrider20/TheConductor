@@ -14,7 +14,11 @@ public class Note_Controller : MonoBehaviour
     void Update()
     {
         if (GameController.Health <= 0 || GameController.WinConditionAchieved)
+        {
+            JustDestroyed = true;
             Destroy(gameObject);
+        }
+            
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
