@@ -26,6 +26,8 @@ public class Game_Controller : MonoBehaviour
 
     [Tooltip("This is the type of level that the scene is. 1 for Score, 2 for Timed, and 3 for Endless.")]
     public int Level_Type;
+    [Tooltip("This is how much score each note is worth.")]
+    public int NoteScoreValue;
 
     [Tooltip("This is the maximum amount of time for the level. This is only useful in the \"Timed\" level.")]
     public float MaxTime;
@@ -77,6 +79,9 @@ public class Game_Controller : MonoBehaviour
     void Update()
     {
         TimeRemaining -= Time.deltaTime;
+        
+        if (TimeRemaining > MaxTime)
+            TimeRemaining = MaxTime;
 
         if ( !WinConditionAchieved )
         {
@@ -165,7 +170,10 @@ public class Game_Controller : MonoBehaviour
 
     public void ChangeScore(int value)
     {
-        Score += value;
+        if ( Score > 0 && value < 0 )
+            Score -= Mathf.Abs(value);
+        else if ( Score >= 0 && value > 0 )
+            Score += value;
         
         if (Score >= ScoreMaximumValue && Level_Type == 1)
         {

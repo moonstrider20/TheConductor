@@ -37,7 +37,7 @@ public class Note_Controller : MonoBehaviour
         if (canBeDestroyed)
         {
             GameController.PlayHitSFX();
-            GameController.ChangeScore(100);
+            GameController.ChangeScore(GameController.NoteScoreValue);
             JustDestroyed = true;
             Destroy(gameObject, 0.0001f);
         }

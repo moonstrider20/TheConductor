@@ -12,9 +12,12 @@ public class Hitter_Controller : MonoBehaviour
     [Tooltip("This is all of the possible states of the hitter, e.g. \"inactive\" and \"active\".")]
     public Sprite[] Hitter_States;
 
+    private Game_Controller Game_Controller;
+
     void Start()
     {
         Sprite_Renderer = GetComponent<SpriteRenderer>();
+        Game_Controller = GameObject.Find("GameController").GetComponent<Game_Controller>();
     }
 
     void Update()
@@ -93,6 +96,22 @@ public class Hitter_Controller : MonoBehaviour
         if (NextNote != null && NextNote.GetComponent<Note_Controller>().GetCanBeDestroyed())
         {
             NextNote.GetComponent<Note_Controller>().DestroyThisObject();
+        }
+        else if ( NextNote == null )
+        {
+            switch ( Game_Controller.Level_Type )
+            {
+                case 1:
+                case 3:
+                    Game_Controller.ChangeScore(-1 * ( Game_Controller.NoteScoreValue / 2 ) );
+                    Game_Controller.PlayMissSFX();
+                    break;
+                default:
+                    if (Game_Controller.TimeRemaining <= Game_Controller.MaxTime)
+                        Game_Controller.TimeRemaining += 2f;
+                    Game_Controller.PlayMissSFX();
+                    break;
+            }
         }
     }
 }
