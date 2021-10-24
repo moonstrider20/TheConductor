@@ -22,13 +22,13 @@ public class Note_Controller : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if ( other != null )
+        if ( other != null && other.gameObject.tag != "Smoke" )
             canBeDestroyed = true;
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if ( other != null )
+        if ( other != null && other.gameObject.tag != "Smoke" )
             canBeDestroyed = false;
     }
 

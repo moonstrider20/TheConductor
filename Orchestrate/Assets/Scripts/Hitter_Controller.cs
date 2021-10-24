@@ -81,7 +81,7 @@ public class Hitter_Controller : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other != null)
+        if (other != null && other.gameObject != GameObject.Find("SmokeScreenTrigger"))
             NextNote = other.gameObject;
     }
 
@@ -93,7 +93,8 @@ public class Hitter_Controller : MonoBehaviour
 
     public void DestroyOther()
     {
-        if (NextNote != null && NextNote.GetComponent<Note_Controller>().GetCanBeDestroyed())
+        Debug.Log(NextNote);
+        if (NextNote != null && NextNote.gameObject.tag != "Smoke" && NextNote.GetComponent<Note_Controller>().GetCanBeDestroyed())
         {
             NextNote.GetComponent<Note_Controller>().DestroyThisObject();
         }
@@ -108,7 +109,7 @@ public class Hitter_Controller : MonoBehaviour
                     break;
                 default:
                     if (Game_Controller.TimeRemaining <= Game_Controller.MaxTime)
-                        Game_Controller.TimeRemaining += 2f;
+                        Game_Controller.TimeRemaining += 1f;
                     Game_Controller.PlayMissSFX();
                     break;
             }

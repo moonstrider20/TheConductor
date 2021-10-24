@@ -42,11 +42,15 @@ public class Game_Controller : MonoBehaviour
 
     public Transform NoteSpawn1, NoteSpawn2, NoteSpawn3, NoteSpawn4, NoteSpawn5;
 
+    public Transform SmokeSpawn1, SmokeSpawn2, SmokeSpawn3, SmokeSpawn4, SmokeSpawn5;
+
     [Tooltip("The Restart Button is the button that will allow the player to restart the level, the \"Quit\" button will allow the player to quit out of the application, and the \"Main Menu\" button allows for quick return to the Main Menu.")]
     public GameObject RestartButton, QuitButton, Main_Menu_Button;
 
     [Tooltip("This is an array of the Note prefabs.")]
     public GameObject[] Notes;
+
+    public GameObject Smoke, SmokeScreen;
 
     [Tooltip("\"SuccessfulText\" is the text that appears when you successfully complete a level and \"ScoreText\" is the player's current score.")]
     public TextMeshProUGUI SuccessfulText, ScoreText;
@@ -78,17 +82,20 @@ public class Game_Controller : MonoBehaviour
 
     void Update()
     {
-        TimeRemaining -= Time.deltaTime;
-        
+        if ( !WinConditionAchieved && Health > 0 )
+            TimeRemaining -= Time.deltaTime;
+        else
+            ScoreText.text = "";
+
         if (TimeRemaining > MaxTime)
             TimeRemaining = MaxTime;
 
-        if ( !WinConditionAchieved )
+        if ( !WinConditionAchieved && Health > 0 )
         {
             UpdateWinCondition();
             UpdateScoreText();
         }
-        else
+        else if ( WinConditionAchieved )
         {
             UpdateSuccessfulText("You win! Restart or Quit?");
         }
@@ -122,7 +129,13 @@ public class Game_Controller : MonoBehaviour
             
         yield return new WaitForSeconds(60 / BPM);
 
-        int randomNumber = Random.Range(1, 6);
+        int randomNumber = Random.Range(1, 7), randomNumber2 = Random.Range(1, 6);
+
+        // This ensures that the game doesn't spawn two smoke objects at the same time in the world.
+        while (GameObject.FindWithTag("Smoke") != null && randomNumber == 5)
+        {
+            randomNumber = Random.Range(1, 7);
+        }
 
         switch(randomNumber)
         {
@@ -142,11 +155,32 @@ public class Game_Controller : MonoBehaviour
                 Instantiate(Notes[3], NoteSpawn4);
                 break;
 
+            case 5:
+                switch ( randomNumber2 )
+                {
+                    case 1:
+                        Instantiate(Smoke, SmokeSpawn1);
+                        break;
+                    case 2:
+                        Instantiate(Smoke, SmokeSpawn2);
+                        break;
+                    case 3:
+                        Instantiate(Smoke, SmokeSpawn3);
+                        break;
+                    case 4:
+                        Instantiate(Smoke, SmokeSpawn4);
+                        break;
+                    default:
+                        Instantiate(Smoke, SmokeSpawn5);
+                        break;
+                }
+                break;
 
             default:
                 Instantiate(Notes[4], NoteSpawn5);
                 break;
         }
+
 
         if ( Health > 0 && !WinConditionAchieved )
             StartCoroutine("SpawnNotes");
