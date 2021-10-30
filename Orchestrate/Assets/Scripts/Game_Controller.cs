@@ -6,8 +6,10 @@ using TMPro;
 
 public class Game_Controller : MonoBehaviour
 {
-    [Tooltip("This is the actual fill that will fill up the health bar, so to say.")]
-    public Image HealthBarFill;
+    #region Global Variable declarations
+
+    // This is the actual fill that will fill up the health bar, so to say.
+    private Image HealthBarFill;
 
     //This is the amount of points needed to win the level. It is randomly set.
     [HideInInspector]
@@ -26,6 +28,7 @@ public class Game_Controller : MonoBehaviour
 
     [Tooltip("This is the type of level that the scene is. 1 for Score, 2 for Timed, and 3 for Endless.")]
     public int Level_Type;
+
     [Tooltip("This is how much score each note is worth.")]
     public int NoteScoreValue;
 
@@ -40,20 +43,18 @@ public class Game_Controller : MonoBehaviour
 
     [Tooltip("These are the possible spawn locations for the notes.")]
 
-    public Transform NoteSpawn1, NoteSpawn2, NoteSpawn3, NoteSpawn4, NoteSpawn5;
+    private Transform NoteSpawn1, NoteSpawn2, NoteSpawn3, NoteSpawn4, NoteSpawn5, SteamSpawn1, SteamSpawn2, SteamSpawn3, SteamSpawn4, SteamSpawn5;
 
-    public Transform SmokeSpawn1, SmokeSpawn2, SmokeSpawn3, SmokeSpawn4, SmokeSpawn5;
-
-    [Tooltip("The Restart Button is the button that will allow the player to restart the level, the \"Quit\" button will allow the player to quit out of the application, and the \"Main Menu\" button allows for quick return to the Main Menu.")]
-    public GameObject RestartButton, QuitButton, Main_Menu_Button;
+    // The Restart Button is the button that will allow the player to restart the level, the "Quit" button will allow the player to quit out of the application, and the "Main Menu" button allows for quick return to the Main Menu."
+    private GameObject RestartButton, QuitButton, Main_Menu_Button;
 
     [Tooltip("This is an array of the Note prefabs.")]
     public GameObject[] Notes;
 
-    public GameObject Smoke, SmokeScreen;
+    public GameObject Steam, SteamScreen;
 
     [Tooltip("\"SuccessfulText\" is the text that appears when you successfully complete a level and \"ScoreText\" is the player's current score.")]
-    public TextMeshProUGUI SuccessfulText, ScoreText;
+    private TextMeshProUGUI SuccessfulText, ScoreText;
 
     [Tooltip("This is the sound effect for the player missing a note.")]
     private AudioSource MissSFX;
@@ -68,26 +69,81 @@ public class Game_Controller : MonoBehaviour
     [HideInInspector]
     public bool WinConditionAchieved = false;
 
+    private Steam_Screen Steam_Screen;
+
+    private int randomNumber;
+
+    #endregion
+
     void Awake()
     {
+        #region GameObject.Find assignments
+
+        SuccessfulText = GameObject.Find("SuccessfulText").GetComponent<TextMeshProUGUI>();
+
+        ScoreText = GameObject.Find("Score_Text").GetComponent<TextMeshProUGUI>();
+
+        Main_Menu_Button = GameObject.Find("Main_Menu_Button");
+
+        RestartButton = GameObject.Find("Restart_Button");
+
+        QuitButton = GameObject.Find("Quit_Button");
+
+        HealthBarFill = GameObject.Find("HealthBarFill").GetComponent<Image>();
+
+        Steam_Screen = GameObject.Find("Bottom_Screen_Boundry").GetComponent<Steam_Screen>();
+
+        NoteSpawn1 = GameObject.Find("NoteSpawn1").GetComponent<Transform>();
+
+        NoteSpawn2 = GameObject.Find("NoteSpawn2").GetComponent<Transform>();
+
+        NoteSpawn3 = GameObject.Find("NoteSpawn3").GetComponent<Transform>();
+
+        NoteSpawn4 = GameObject.Find("NoteSpawn4").GetComponent<Transform>();
+
+        NoteSpawn5 = GameObject.Find("NoteSpawn5").GetComponent<Transform>();
+
+        SteamSpawn1 = GameObject.Find("SteamSpawn1").GetComponent<Transform>();
+
+        SteamSpawn2 = GameObject.Find("SteamSpawn2").GetComponent<Transform>();
+
+        SteamSpawn3 = GameObject.Find("SteamSpawn3").GetComponent<Transform>();
+
+        SteamSpawn4 = GameObject.Find("SteamSpawn4").GetComponent<Transform>();
+
+        SteamSpawn5 = GameObject.Find("SteamSpawn5").GetComponent<Transform>();
+
+        #endregion
+
+        RestartButton.SetActive(false);
+
+        QuitButton.SetActive(false);
+
+        Main_Menu_Button.SetActive(false);
+
         HealthBarFill.fillAmount = 1;
+
         MissSFX = gameObject.GetComponent<AudioSource>();
-        TapSFX = GameObject.Find("TapSFX").GetComponent<AudioSource>();
+        
         Health = HealthMax;
+
         TimeRemaining = MaxTime;
+
         ScoreMaximumValue = Random.Range(15, 31);
+
         ScoreMaximumValue *= 100;
+        
         StartCoroutine("SpawnNotes");
     }
 
     void Update()
     {
-        if ( !WinConditionAchieved && Health > 0 )
+        if ( Level_Type == 2 && !WinConditionAchieved && Health > 0 )
             TimeRemaining -= Time.deltaTime;
-        else
-            ScoreText.text = "";
+        //else
+            //ScoreText.text = "";
 
-        if (TimeRemaining > MaxTime)
+        if ( Level_Type == 2 && TimeRemaining > MaxTime )
             TimeRemaining = MaxTime;
 
         if ( !WinConditionAchieved && Health > 0 )
@@ -129,13 +185,15 @@ public class Game_Controller : MonoBehaviour
             
         yield return new WaitForSeconds(60 / BPM);
 
-        int randomNumber = Random.Range(1, 7), randomNumber2 = Random.Range(1, 6);
+        randomNumber = Random.Range(1, 7);
+        
+        int randomNumber2 = Random.Range(1, 6);
 
-        // This ensures that the game doesn't spawn two smoke objects at the same time in the world.
-        while (GameObject.FindWithTag("Smoke") != null && randomNumber == 5)
-        {
-            randomNumber = Random.Range(1, 7);
-        }
+        GameObject SteamScreenClone = GameObject.Find("Steamscreen(Clone)");
+
+        // This ensures that the game doesn't spawn two Steam objects at the same time in the world or that the Steam screen is currently active.
+        if ( ( GameObject.FindWithTag("Steam") != null && randomNumber == 6 ) || ( (SteamScreenClone != null && SteamScreenClone.activeInHierarchy) && randomNumber == 6 ) )
+            randomNumber = Random.Range(1, 6);
 
         switch(randomNumber)
         {
@@ -156,29 +214,30 @@ public class Game_Controller : MonoBehaviour
                 break;
 
             case 5:
-                switch ( randomNumber2 )
-                {
-                    case 1:
-                        Instantiate(Smoke, SmokeSpawn1);
-                        break;
-                    case 2:
-                        Instantiate(Smoke, SmokeSpawn2);
-                        break;
-                    case 3:
-                        Instantiate(Smoke, SmokeSpawn3);
-                        break;
-                    case 4:
-                        Instantiate(Smoke, SmokeSpawn4);
-                        break;
-                    default:
-                        Instantiate(Smoke, SmokeSpawn5);
-                        break;
-                }
+                Instantiate(Notes[4], NoteSpawn5);
                 break;
 
             default:
-                Instantiate(Notes[4], NoteSpawn5);
+                switch ( randomNumber2 )
+                {
+                    case 1:
+                        Instantiate(Steam, SteamSpawn1);
+                        break;
+                    case 2:
+                        Instantiate(Steam, SteamSpawn2);
+                        break;
+                    case 3:
+                        Instantiate(Steam, SteamSpawn3);
+                        break;
+                    case 4:
+                        Instantiate(Steam, SteamSpawn4);
+                        break;
+                    default:
+                        Instantiate(Steam, SteamSpawn5);
+                        break;
+                }
                 break;
+                
         }
 
 
@@ -258,6 +317,25 @@ public class Game_Controller : MonoBehaviour
 
     public void PlayHitSFX()
     {
+        switch( randomNumber )
+        {
+            case 1:
+                TapSFX = GameObject.Find("A_Note").GetComponent<AudioSource>();
+                break;
+            case 2:
+                TapSFX = GameObject.Find("C_Note").GetComponent<AudioSource>();
+                break;
+            case 3:
+                TapSFX = GameObject.Find("D_Note").GetComponent<AudioSource>();
+                break;
+            case 4:
+                TapSFX = GameObject.Find("E_Note").GetComponent<AudioSource>();
+                break;
+            default:
+                TapSFX = GameObject.Find("G_Note").GetComponent<AudioSource>();
+                break;
+                
+        }
         TapSFX.Play();
     }
 

@@ -9,6 +9,7 @@ TagManager:
   - Hitter
   - SmokeBoundry
   - GameBoundry
+  - Steam
   layers:
   - Default
   - TransparentFX
@@ -45,4 +46,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Not default
+    uniqueID: 3708908225
     locked: 0

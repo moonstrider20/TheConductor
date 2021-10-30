@@ -81,7 +81,7 @@ public class Hitter_Controller : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other != null && other.gameObject != GameObject.Find("SmokeScreenTrigger"))
+        if (other != null && other.gameObject.tag != "Steam")
             NextNote = other.gameObject;
     }
 
@@ -93,8 +93,7 @@ public class Hitter_Controller : MonoBehaviour
 
     public void DestroyOther()
     {
-        Debug.Log(NextNote);
-        if (NextNote != null && NextNote.gameObject.tag != "Smoke" && NextNote.GetComponent<Note_Controller>().GetCanBeDestroyed())
+        if (NextNote != null && NextNote.gameObject.tag != "Steam" && NextNote.GetComponent<Note_Controller>().GetCanBeDestroyed())
         {
             NextNote.GetComponent<Note_Controller>().DestroyThisObject();
         }
