@@ -58,6 +58,7 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
-\Library\
-\bin\
-\obj\
+Orchestrate\Library\
+Orchestrate\bin\
+Orchestrate\obj\
+Orchestrate\Temp\
