@@ -25,7 +25,7 @@ public class Hitter_Controller : MonoBehaviour
         Vector3 worldPosition;
         float x = gameObject.transform.position.x, y = gameObject.transform.position.y, z = gameObject.transform.position.z;
 
-        if (Input.touchCount > 0)
+        if (Time.timeScale == 1 && Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
 
@@ -41,7 +41,7 @@ public class Hitter_Controller : MonoBehaviour
                 }
             }
 
-            if ( ( (worldPosition.x > x - 1f) && (worldPosition.x < x + 1f) ) && ( (worldPosition.y > y - 1f) && (worldPosition.y < y + 1f) ) )
+            if ( Time.timeScale == 1 && ( (worldPosition.x > x - 1f) && (worldPosition.x < x + 1f) ) && ( (worldPosition.y > y - 1f) && (worldPosition.y < y + 1f) ) )
             {
                 SwitchStates(true);
                 DestroyOther();
@@ -59,7 +59,7 @@ public class Hitter_Controller : MonoBehaviour
                 worldPosition = new Vector3(0, 0, 0);
             }
             
-            if ( ( (worldPosition.x > x - 1f) && (worldPosition.x < x + 1f) ) && ( (worldPosition.y > y - 1f) && (worldPosition.y < y + 1f) ) )
+            if ( Time.timeScale == 1 && ( (worldPosition.x > x - 1f) && (worldPosition.x < x + 1f) ) && ( (worldPosition.y > y - 1f) && (worldPosition.y < y + 1f) ) )
             {
                 DestroyOther();
             }
@@ -93,11 +93,12 @@ public class Hitter_Controller : MonoBehaviour
 
     public void DestroyOther()
     {
-        if (NextNote != null && NextNote.gameObject.tag != "Steam" && NextNote.GetComponent<Note_Controller>().GetCanBeDestroyed())
+        if (Time.timeScale == 1 && NextNote != null && NextNote.gameObject.tag != "Steam" && NextNote.GetComponent<Note_Controller>().GetCanBeDestroyed())
         {
+            gameObject.GetComponent<AudioSource>().Play();
             NextNote.GetComponent<Note_Controller>().DestroyThisObject();
         }
-        else if ( NextNote == null )
+        else if ( Time.timeScale == 1 && NextNote == null )
         {
             switch ( Game_Controller.Level_Type )
             {

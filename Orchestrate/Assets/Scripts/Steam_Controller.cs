@@ -57,7 +57,7 @@ public class Steam_Controller : MonoBehaviour
         // Failed code for trying to make the Steam only swipable from near the Steam object
         // && ( (worldX >= ( gameObjectX - 0.7f ) ) && (worldX <= ( gameObjectX + 0.7f ) ) ) && ( (worldY >= ( gameObjectY - 16f ) ) && (worldY <= ( gameObjectY + 1f ) ) )
         
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
+        if (Time.timeScale == 1 && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
         {
             touchTimeFinish = Time.time;
 

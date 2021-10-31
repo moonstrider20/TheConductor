@@ -11,8 +11,7 @@ public class Game_Controller : MonoBehaviour
     // This is the actual fill that will fill up the health bar, so to say.
     private Image HealthBarFill;
 
-    //This is the amount of points needed to win the level. It is randomly set.
-    [HideInInspector]
+    //This is the amount of points needed to win the level.
     public int ScoreMaximumValue;
 
     [Tooltip("This is the maximum amount of how many hits the player can take. This number can be adjusted freely and the health bar should decrease / increase accordingly.")]
@@ -25,6 +24,9 @@ public class Game_Controller : MonoBehaviour
     // This is the player's current score.
     [HideInInspector]
     public int Score = 0;
+
+    [Tooltip("This is whether or not the level is in the Story Mode or not.")]
+    public bool IsStoryMode;
 
     [Tooltip("This is the type of level that the scene is. 1 for Score, 2 for Timed, and 3 for Endless.")]
     public int Level_Type;
@@ -63,7 +65,7 @@ public class Game_Controller : MonoBehaviour
     private AudioSource TapSFX;
 
     [Tooltip("This is \"Beats Per Minute\" (or BPM), essentially this is how many notes are spawned per minute.")]
-    public int BPM;
+    public float BPM;
 
     // This is if the win condition for the level has been achieved yet or not
     [HideInInspector]
@@ -119,8 +121,6 @@ public class Game_Controller : MonoBehaviour
 
         QuitButton.SetActive(false);
 
-        Main_Menu_Button.SetActive(false);
-
         HealthBarFill.fillAmount = 1;
 
         MissSFX = gameObject.GetComponent<AudioSource>();
@@ -128,10 +128,6 @@ public class Game_Controller : MonoBehaviour
         Health = HealthMax;
 
         TimeRemaining = MaxTime;
-
-        ScoreMaximumValue = Random.Range(15, 31);
-
-        ScoreMaximumValue *= 100;
         
         StartCoroutine("SpawnNotes");
     }
@@ -279,7 +275,6 @@ public class Game_Controller : MonoBehaviour
     private void UpdateSuccessfulText(string newText)
     {
         SuccessfulText.text = newText;
-        Main_Menu_Button.SetActive(true);
         RestartButton.SetActive(true);
         QuitButton.SetActive(true);
     }
@@ -305,38 +300,19 @@ public class Game_Controller : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void MainMenu()
+    public void Back()
     {
-        SceneManager.LoadScene(0);
+        Time.timeScale = 1;
+        // For now, this will just load the scene located at Build Index 1, so make sure that the Map is located at Build Index 1.
+        if ( IsStoryMode )
+            SceneManager.LoadScene(1);
+        else
+            SceneManager.LoadScene(0);
     }
 
     public void PlayMissSFX()
     {
         MissSFX.Play();
-    }
-
-    public void PlayHitSFX()
-    {
-        switch( randomNumber )
-        {
-            case 1:
-                TapSFX = GameObject.Find("A_Note").GetComponent<AudioSource>();
-                break;
-            case 2:
-                TapSFX = GameObject.Find("C_Note").GetComponent<AudioSource>();
-                break;
-            case 3:
-                TapSFX = GameObject.Find("D_Note").GetComponent<AudioSource>();
-                break;
-            case 4:
-                TapSFX = GameObject.Find("E_Note").GetComponent<AudioSource>();
-                break;
-            default:
-                TapSFX = GameObject.Find("G_Note").GetComponent<AudioSource>();
-                break;
-                
-        }
-        TapSFX.Play();
     }
 
     public void Quit()
