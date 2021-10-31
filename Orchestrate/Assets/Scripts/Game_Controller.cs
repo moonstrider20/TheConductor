@@ -48,7 +48,7 @@ public class Game_Controller : MonoBehaviour
     private Transform NoteSpawn1, NoteSpawn2, NoteSpawn3, NoteSpawn4, NoteSpawn5, SteamSpawn1, SteamSpawn2, SteamSpawn3, SteamSpawn4, SteamSpawn5;
 
     // The Restart Button is the button that will allow the player to restart the level, the "Quit" button will allow the player to quit out of the application, and the "Main Menu" button allows for quick return to the Main Menu."
-    private GameObject RestartButton, QuitButton, Main_Menu_Button;
+    private GameObject RestartButton, QuitButton, Main_Menu_Button, BackButton;
 
     [Tooltip("This is an array of the Note prefabs.")]
     public GameObject[] Notes;
@@ -80,6 +80,8 @@ public class Game_Controller : MonoBehaviour
     void Awake()
     {
         #region GameObject.Find assignments
+
+        BackButton = GameObject.Find("Back_Button");
 
         SuccessfulText = GameObject.Find("SuccessfulText").GetComponent<TextMeshProUGUI>();
 
@@ -120,6 +122,8 @@ public class Game_Controller : MonoBehaviour
         RestartButton.SetActive(false);
 
         QuitButton.SetActive(false);
+
+        BackButton.SetActive(false);
 
         HealthBarFill.fillAmount = 1;
 
@@ -253,7 +257,7 @@ public class Game_Controller : MonoBehaviour
         else if ( Health == 0 )
         {
             HealthBarFill.fillAmount = 0;
-            UpdateSuccessfulText("You lost. Restart or quit?");
+            UpdateSuccessfulText("You lost. Restart, Return to Map, or Quit?");
         }
     }
 
@@ -269,6 +273,7 @@ public class Game_Controller : MonoBehaviour
             SuccessfulText.text = "You won! Restart or quit?";
             RestartButton.SetActive(true);
             QuitButton.SetActive(true);
+            BackButton.SetActive(true);
         }
     }
 
@@ -277,6 +282,7 @@ public class Game_Controller : MonoBehaviour
         SuccessfulText.text = newText;
         RestartButton.SetActive(true);
         QuitButton.SetActive(true);
+        BackButton.SetActive(true);
     }
 
     private void UpdateScoreText()
@@ -302,12 +308,8 @@ public class Game_Controller : MonoBehaviour
 
     public void Back()
     {
-        Time.timeScale = 1;
-        // For now, this will just load the scene located at Build Index 1, so make sure that the Map is located at Build Index 1.
-        if ( IsStoryMode )
-            SceneManager.LoadScene(1);
-        else
-            SceneManager.LoadScene(0);
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(1);
     }
 
     public void PlayMissSFX()

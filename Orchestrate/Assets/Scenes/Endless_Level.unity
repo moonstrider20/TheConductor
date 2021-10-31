@@ -131,29 +131,9 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1028736211, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_Volume
-      value: 0.6
-      objectReference: {fileID: 0}
-    - target: {fileID: 1028736211, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
       propertyPath: m_audioClip
       value: 
-      objectReference: {fileID: 8300000, guid: 8d972a1f3dfb8cd4eaa4454e3fe50acb, type: 3}
-    - target: {fileID: 949492699712328384, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_Volume
-      value: 0.08
-      objectReference: {fileID: 0}
-    - target: {fileID: 949492699712328384, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: cab15f1110e6f244890780e9ddb706f7, type: 3}
-    - target: {fileID: 2439464784819768480, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 233
-      objectReference: {fileID: 0}
-    - target: {fileID: 2439464784819768480, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -461.92
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8300000, guid: 3fdb64b988fdfaf498ff8575886fbf30, type: 3}
     - target: {fileID: 3258082600250680296, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -202,53 +182,5 @@ PrefabInstance:
       propertyPath: m_Name
       value: Basic_Level_Design
       objectReference: {fileID: 0}
-    - target: {fileID: 3258082600644365110, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: BPM
-      value: 152
-      objectReference: {fileID: 0}
-    - target: {fileID: 3258082600644365110, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: Level_Type
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 3582194434702888641, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_Volume
-      value: 0.08
-      objectReference: {fileID: 0}
-    - target: {fileID: 3582194434702888641, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 8c6afccdc735b9a4c8d4b105b8b52d3b, type: 3}
-    - target: {fileID: 3852921168215797662, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_Volume
-      value: 0.08
-      objectReference: {fileID: 0}
-    - target: {fileID: 3852921168215797662, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: f76a8c8372671224e9c4b607d65d3ce9, type: 3}
-    - target: {fileID: 5827582538696981201, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_Volume
-      value: 0.08
-      objectReference: {fileID: 0}
-    - target: {fileID: 5827582538696981201, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 866def62e7efc9f40a02f7b9ee2a4b85, type: 3}
-    - target: {fileID: 6751401751512476673, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 776
-      objectReference: {fileID: 0}
-    - target: {fileID: 6751401751512476673, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -461.92
-      objectReference: {fileID: 0}
-    - target: {fileID: 7135557354451199405, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_Volume
-      value: 0.08
-      objectReference: {fileID: 0}
-    - target: {fileID: 7135557354451199405, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 5c69b5f6beb7c744aab2fb3a40c7fb45, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3ab33d2d2d8220e45a4c9ae420410dcb, type: 3}

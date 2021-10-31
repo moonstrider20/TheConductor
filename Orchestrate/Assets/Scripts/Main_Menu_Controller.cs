@@ -70,8 +70,12 @@ public class Main_Menu_Controller : MonoBehaviour
     }
     public void StartMenu()
     {
-        MenuSelector = 3;
-        SwitchCanvas();
+        SceneManager.LoadScene(1);
+    }
+
+    public void Quit()
+    {
+        Application.Quit();
     }
 
     public void SwitchCanvas()
