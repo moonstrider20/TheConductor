@@ -97,6 +97,11 @@ public class Hitter_Controller : MonoBehaviour
         {
             gameObject.GetComponent<AudioSource>().Play();
             NextNote.GetComponent<Note_Controller>().DestroyThisObject();
+
+            if(NextNote.gameObject.tag == "Health")
+            {
+                Game_Controller.ChangeHealth(1);
+            }
         }
         else if ( Time.timeScale == 1 && NextNote == null )
         {

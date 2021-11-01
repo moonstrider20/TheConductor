@@ -45,7 +45,7 @@ public class Game_Controller : MonoBehaviour
 
     [Tooltip("These are the possible spawn locations for the notes.")]
 
-    private Transform NoteSpawn1, NoteSpawn2, NoteSpawn3, NoteSpawn4, NoteSpawn5, SteamSpawn1, SteamSpawn2, SteamSpawn3, SteamSpawn4, SteamSpawn5;
+    private Transform NoteSpawn1, NoteSpawn2, NoteSpawn3, NoteSpawn4, NoteSpawn5, SteamSpawn1, SteamSpawn2, SteamSpawn3, SteamSpawn4, SteamSpawn5, HealthNoteSpawn1, HealthNoteSpawn2, HealthNoteSpawn3, HealthNoteSpawn4, HealthNoteSpawn5;
 
     // The Restart Button is the button that will allow the player to restart the level, the "Quit" button will allow the player to quit out of the application, and the "Main Menu" button allows for quick return to the Main Menu."
     private GameObject RestartButton, QuitButton, Main_Menu_Button;
@@ -54,6 +54,8 @@ public class Game_Controller : MonoBehaviour
     public GameObject[] Notes;
 
     public GameObject Steam, SteamScreen;
+
+    public GameObject HealthNote;
 
     [Tooltip("\"SuccessfulText\" is the text that appears when you successfully complete a level and \"ScoreText\" is the player's current score.")]
     private TextMeshProUGUI SuccessfulText, ScoreText;
@@ -114,6 +116,16 @@ public class Game_Controller : MonoBehaviour
         SteamSpawn4 = GameObject.Find("SteamSpawn4").GetComponent<Transform>();
 
         SteamSpawn5 = GameObject.Find("SteamSpawn5").GetComponent<Transform>();
+
+        HealthNoteSpawn1 = GameObject.Find("HealthNoteSpawn1").GetComponent<Transform>();
+
+        HealthNoteSpawn2 = GameObject.Find("HealthNoteSpawn2").GetComponent<Transform>();
+
+        HealthNoteSpawn3 = GameObject.Find("HealthNoteSpawn3").GetComponent<Transform>();
+
+        HealthNoteSpawn4 = GameObject.Find("HealthNoteSpawn4").GetComponent<Transform>();
+
+        HealthNoteSpawn5 = GameObject.Find("HealthNoteSpawn5").GetComponent<Transform>();
 
         #endregion
 
@@ -181,7 +193,7 @@ public class Game_Controller : MonoBehaviour
             
         yield return new WaitForSeconds(60 / BPM);
 
-        randomNumber = Random.Range(1, 7);
+        randomNumber = Random.Range(1, 8);
         
         int randomNumber2 = Random.Range(1, 6);
 
@@ -213,7 +225,7 @@ public class Game_Controller : MonoBehaviour
                 Instantiate(Notes[4], NoteSpawn5);
                 break;
 
-            default:
+            case 6:
                 switch ( randomNumber2 )
                 {
                     case 1:
@@ -230,6 +242,27 @@ public class Game_Controller : MonoBehaviour
                         break;
                     default:
                         Instantiate(Steam, SteamSpawn5);
+                        break;
+                }
+                break;
+
+            default:
+                switch ( randomNumber2 )
+                {
+                    case 1:
+                        Instantiate(HealthNote, HealthNoteSpawn1);
+                        break;
+                    case 2:
+                        Instantiate(HealthNote, HealthNoteSpawn2);
+                        break;
+                    case 3:
+                        Instantiate(HealthNote, HealthNoteSpawn3);
+                        break;
+                    case 4:
+                        Instantiate(HealthNote, HealthNoteSpawn4);
+                        break;
+                    default:
+                        Instantiate(HealthNote, HealthNoteSpawn5);
                         break;
                 }
                 break;
