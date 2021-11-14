@@ -2,7 +2,7 @@ using UnityEngine;
 
 /*
 
-Code created by Christian Babcock for DIG4715C Casual Game Production. October 22nd, 2021.
+Code created by Christian Babcock and modified by Seth Grimes for DIG4715C Casual Game Production. October 22nd, 2021.
 
 */
 
@@ -57,7 +57,7 @@ public class Steam_Controller : MonoBehaviour
         // Failed code for trying to make the Steam only swipable from near the Steam object
         // && ( (worldX >= ( gameObjectX - 0.7f ) ) && (worldX <= ( gameObjectX + 0.7f ) ) ) && ( (worldY >= ( gameObjectY - 16f ) ) && (worldY <= ( gameObjectY + 1f ) ) )
         
-        if (Time.timeScale == 1 && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended)
+        if (Time.timeScale == 1 && Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Ended && Input.GetTouch(0).deltaTime <= 0.1f)
         {
             touchTimeFinish = Time.time;
 

@@ -36,7 +36,8 @@ public class Note_Controller : MonoBehaviour
     {
         if (canBeDestroyed)
         {
-            GameController.ChangeScore(GameController.NoteScoreValue);
+            if (gameObject.tag != "HealthNote")
+                GameController.ChangeScore(GameController.NoteScoreValue);
             JustDestroyed = true;
             Destroy(gameObject, 0.0001f);
         }

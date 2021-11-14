@@ -96,10 +96,18 @@ public class Hitter_Controller : MonoBehaviour
         if (Time.timeScale == 1 && NextNote != null && NextNote.gameObject.tag != "Steam" && NextNote.GetComponent<Note_Controller>().GetCanBeDestroyed())
         {
             gameObject.GetComponent<AudioSource>().Play();
+
+            if(NextNote.gameObject.tag == "HealthNote")
+                Game_Controller.StartCoroutine("ChangeHealth", 1);
+            else
+                Game_Controller.SuccessfulNotes++;
+
             NextNote.GetComponent<Note_Controller>().DestroyThisObject();
         }
         else if ( Time.timeScale == 1 && NextNote == null )
         {
+            Game_Controller.NotesMissed++;
+
             switch ( Game_Controller.Level_Type )
             {
                 case 1:
@@ -108,8 +116,12 @@ public class Hitter_Controller : MonoBehaviour
                     Game_Controller.PlayMissSFX();
                     break;
                 default:
-                    if (Game_Controller.TimeRemaining <= Game_Controller.MaxTime)
+                    if (Mathf.Round(Game_Controller.TimeRemaining) < Mathf.Round(Game_Controller.MaxTime))
+                    {
                         Game_Controller.TimeRemaining += 1f;
+                        Game_Controller.TimeAdded++;
+                    }
+                        
                     Game_Controller.PlayMissSFX();
                     break;
             }

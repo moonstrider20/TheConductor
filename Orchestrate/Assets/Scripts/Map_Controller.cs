@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Map_Controller : MonoBehaviour
 {
+    public int levelsCompleted;
+    public bool levelOneCompleted;
+    public bool levelTwoCompleted;
+
     [SerializeField]
     private Transform[] waypoints;
 
@@ -16,16 +20,23 @@ public class Map_Controller : MonoBehaviour
     private int waypointIndex = 0;
 
     private Vector3 targetPosition;
-    private bool isMoving = false;
+    public bool isMoving = false;
     RaycastHit2D hit;
 
-    public GameObject levelPopup1, levelPopup2, levelPopup3;
+    [HideInInspector]
+    public GameObject CurrentButton;
 
-    private GameObject CurrentButton;
+    private Map_Gears MapGearChecker;
 
     private void Start()
     {
         transform.position = waypoints[waypointIndex].transform.position;
+        levelOneCompleted = GameObject.Find("HighScoreTracker").GetComponent<HighScoreTracker>().Level1Completed;
+        levelTwoCompleted = GameObject.Find("HighScoreTracker").GetComponent<HighScoreTracker>().Level2Completed;
+        if (levelOneCompleted)
+            levelsCompleted++;
+        if (levelTwoCompleted)
+            levelsCompleted++;
     }
 
     void Update()
@@ -36,11 +47,20 @@ public class Map_Controller : MonoBehaviour
             Vector3 touchPosition = Camera.main.ScreenToWorldPoint(touch.position);
             Vector2 touchPosition2D = new Vector2(touchPosition.x, touchPosition.y);
             hit = Physics2D.Raycast(touchPosition2D, Vector2.zero);
-            if (hit.collider != null)
+            if (hit.collider != null && hit.collider.gameObject.tag == "Level" && !isMoving)
             {
-                if (hit.collider.gameObject.tag == "Level" && CurrentButton != hit.collider.gameObject)
+                MapGearChecker = hit.collider.gameObject.GetComponent<Map_Gears>();
+
+                if (CurrentButton != hit.collider.gameObject)
                 {
-                    SetTargetPosition();
+                    if (MapGearChecker.isAvailable)
+                    {
+                        SetTargetPosition();
+                    }
+                }
+                else if (CurrentButton == hit.collider.gameObject && !isMoving)
+                {
+                    MapGearChecker.ActivateLevelPopup();
                 }
             }
         }
@@ -67,32 +87,20 @@ public class Map_Controller : MonoBehaviour
             if (waypointIndex <= waypoints.Length - 1)
             {
                 transform.position = Vector2.MoveTowards(transform.position, waypoints[waypointIndex].transform.position, moveSpeed * Time.deltaTime);
-                
+
                 if (transform.position == waypoints[waypointIndex].transform.position)
                 {
                     if (waypoints[waypointIndex].transform.position == targetPosition)
                     {
                         isMoving = false;
-                        switch ( CurrentButton.name )
-                        {
-                            case "Level1":
-                                levelPopup1.SetActive(true);
-                                break;
-                            case "Level2":
-                                levelPopup2.SetActive(true);
-                                break;
-                            default:
-                                levelPopup3.SetActive(true);
-                                break;
-                        }
+                        MapGearChecker?.ActivateLevelPopup();
                         animator.SetInteger("State", 0);
                         return;
                     }
                     waypointIndex++;
                 }
-                
             }
-        }        
+        }
 
         if (transform.position.y > targetPosition.y)
         {
@@ -107,18 +115,7 @@ public class Map_Controller : MonoBehaviour
                     if (waypoints[waypointIndex].transform.position == targetPosition)
                     {
                         isMoving = false;
-                        switch ( CurrentButton.name )
-                        {
-                            case "Level1":
-                                levelPopup1.SetActive(true);
-                                break;
-                            case "Level2":
-                                levelPopup2.SetActive(true);
-                                break;
-                            default:
-                                levelPopup3.SetActive(true);
-                                break;
-                        }
+                        MapGearChecker?.ActivateLevelPopup();
                         animator.SetInteger("State", 0);
                         return;
                     }
@@ -126,13 +123,12 @@ public class Map_Controller : MonoBehaviour
                 }
             }
         }
+
+        
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if ( other != null )
-            CurrentButton = other.gameObject;  
+        CurrentButton = other?.gameObject;            
     }
-
-    public bool GetIsMoving() => isMoving;
 }

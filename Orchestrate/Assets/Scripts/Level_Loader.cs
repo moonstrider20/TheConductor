@@ -1,22 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Level_Loader : MonoBehaviour
 {
+    public void LoadMainMenu()
+    {
+        SceneManager.LoadScene("Main_Menu");
+    }
     public void LoadScoreLevel()
     {
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene("Score_Based_Level");
     }
 
     public void LoadTimedLevel()
     {
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene("Time_Based_Level");
     }
 
     public void LoadEndlessLevel()
     {
-        SceneManager.LoadScene(4);
+        SceneManager.LoadScene("Endless_Level");
     }
 }

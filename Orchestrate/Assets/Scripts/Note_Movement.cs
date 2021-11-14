@@ -23,11 +23,12 @@ public class Note_Movement : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (!gameObject.GetComponent<Note_Controller>().GetJustDestroyed() && other.gameObject.tag == "Hitter")
+        if (!gameObject.GetComponent<Note_Controller>().GetJustDestroyed() && other.gameObject.tag == "Hitter" && this.gameObject.tag != "HealthNote")
         {
             Handheld.Vibrate();
             GameController.PlayMissSFX();
-            GameController.ChangeHealth(-1);
+            GameController.StartCoroutine("ChangeHealth", -1);
+            GameController.NotesMissed++;
             Destroy(gameObject);
         }
         else if ( other.gameObject.tag == "SmokeBoundry")

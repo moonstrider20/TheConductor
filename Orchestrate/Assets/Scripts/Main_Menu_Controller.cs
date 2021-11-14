@@ -13,7 +13,7 @@ public class Main_Menu_Controller : MonoBehaviour
     private int MenuSelector = 0;
 
     [Tooltip("'MainMenuCanvas' is the Canvas for the Main Menu. 'CreditsMenuCanvas' is the Canvas for the Credits Menu inside of the Main Menu.")]
-    public Canvas MainMenuCanvas, CreditsMenuCanvas, SettingsMenuCanvas, StartMenuCanvas;
+    public Canvas MainMenuCanvas, CreditsMenuCanvas, SettingsMenuCanvas, StartMenuCanvas, HighScoreMenuCanvas;
     private AudioSource ButtonClickSFX;
     private bool GameJustStarted = true;
 
@@ -31,21 +31,21 @@ public class Main_Menu_Controller : MonoBehaviour
     public void Score()
     {
         ButtonClickSFX.Play();
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("Score_Based_Level");
     }
 
     // The Timed() function loads the "Timed" scene, which is the timed version of the game.
     public void Timed()
     {
         ButtonClickSFX.Play();
-        SceneManager.LoadScene(2);
+        SceneManager.LoadScene("Time_Based_Level");
     }
 
     // The Endless() function loads the "Endless" scene, which is the endless version of the game.
     public void Endless()
     {
         ButtonClickSFX.Play();
-        SceneManager.LoadScene(3);
+        SceneManager.LoadScene("Endless_Level");
     }
 
     // The MainMenu() function returns the user to the main menu.
@@ -68,9 +68,15 @@ public class Main_Menu_Controller : MonoBehaviour
         MenuSelector = 2;
         SwitchCanvas();
     }
+
+    public void HighScores()
+    {
+        MenuSelector = 4;
+        SwitchCanvas();
+    }
     public void StartMenu()
     {
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("Map_Scene");
     }
 
     public void Quit()
@@ -92,6 +98,7 @@ public class Main_Menu_Controller : MonoBehaviour
                 SettingsMenuCanvas.enabled = false;
                 CreditsMenuCanvas.enabled = true;
                 StartMenuCanvas.enabled = false;
+                HighScoreMenuCanvas.enabled = false;
                 break;
 
             case 2:
@@ -99,6 +106,7 @@ public class Main_Menu_Controller : MonoBehaviour
                 SettingsMenuCanvas.enabled = true;
                 CreditsMenuCanvas.enabled = false;
                 StartMenuCanvas.enabled = false;
+                HighScoreMenuCanvas.enabled = false;
                 break;
 
             case 3:
@@ -106,6 +114,15 @@ public class Main_Menu_Controller : MonoBehaviour
                 SettingsMenuCanvas.enabled = false;
                 CreditsMenuCanvas.enabled = false;
                 StartMenuCanvas.enabled = true;
+                HighScoreMenuCanvas.enabled = false;
+                break;
+
+            case 4:
+                MainMenuCanvas.enabled = false;
+                SettingsMenuCanvas.enabled = false;
+                CreditsMenuCanvas.enabled = false;
+                StartMenuCanvas.enabled = false;
+                HighScoreMenuCanvas.enabled = true;
                 break;
 
             default:
@@ -113,6 +130,7 @@ public class Main_Menu_Controller : MonoBehaviour
                 SettingsMenuCanvas.enabled = false;
                 CreditsMenuCanvas.enabled = false;
                 StartMenuCanvas.enabled = false;
+                HighScoreMenuCanvas.enabled = false;
                 break;
         }
     }

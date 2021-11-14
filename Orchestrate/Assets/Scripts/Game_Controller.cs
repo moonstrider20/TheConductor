@@ -15,11 +15,11 @@ public class Game_Controller : MonoBehaviour
     public int ScoreMaximumValue;
 
     [Tooltip("This is the maximum amount of how many hits the player can take. This number can be adjusted freely and the health bar should decrease / increase accordingly.")]
-    public int HealthMax;
+    public float HealthMax;
 
     // This is how many more hits the player can take currently.
     [HideInInspector]
-    public int Health;
+    public float Health;
 
     // This is the player's current score.
     [HideInInspector]
@@ -34,6 +34,10 @@ public class Game_Controller : MonoBehaviour
     [Tooltip("This is how much score each note is worth.")]
     public int NoteScoreValue;
 
+    [Tooltip("This is how much time has been added since the start of the level. This is only useful in the \"Timed\" level.")]
+    [HideInInspector]
+    public int TimeAdded = 0, NotesMissed = 0, SuccessfulNotes = 0;
+
     [Tooltip("This is the maximum amount of time for the level. This is only useful in the \"Timed\" level.")]
     public float MaxTime;
 
@@ -45,7 +49,7 @@ public class Game_Controller : MonoBehaviour
 
     [Tooltip("These are the possible spawn locations for the notes.")]
 
-    private Transform NoteSpawn1, NoteSpawn2, NoteSpawn3, NoteSpawn4, NoteSpawn5, SteamSpawn1, SteamSpawn2, SteamSpawn3, SteamSpawn4, SteamSpawn5;
+    private Transform NoteSpawn1, NoteSpawn2, NoteSpawn3, NoteSpawn4, NoteSpawn5, SteamSpawn1, SteamSpawn2, SteamSpawn3, SteamSpawn4, SteamSpawn5, HealthNoteSpawn1, HealthNoteSpawn2, HealthNoteSpawn3, HealthNoteSpawn4, HealthNoteSpawn5;
 
     // The Restart Button is the button that will allow the player to restart the level, the "Quit" button will allow the player to quit out of the application, and the "Main Menu" button allows for quick return to the Main Menu."
     private GameObject RestartButton, QuitButton, Main_Menu_Button, BackButton;
@@ -55,8 +59,8 @@ public class Game_Controller : MonoBehaviour
 
     public GameObject Steam, SteamScreen;
 
-    [Tooltip("\"SuccessfulText\" is the text that appears when you successfully complete a level and \"ScoreText\" is the player's current score.")]
-    private TextMeshProUGUI SuccessfulText, ScoreText;
+    [Tooltip("\"SuccessfulText\" is the text that appears when you successfully complete a level and \"ScoreText\" is the player's current score. TimeAddedText is for the amount of time added since the start of the level.")]
+    private TextMeshProUGUI SuccessfulText, ScoreText, TimeAddedText, ScoreTextEndScreen, AccuracyText, NotesMissedText, LevelText, CountdownText;
 
     [Tooltip("This is the sound effect for the player missing a note.")]
     private AudioSource MissSFX;
@@ -67,13 +71,26 @@ public class Game_Controller : MonoBehaviour
     [Tooltip("This is \"Beats Per Minute\" (or BPM), essentially this is how many notes are spawned per minute.")]
     public float BPM;
 
+    [HideInInspector]
+    [Tooltip("This is how accurate you were over the course of the song.")]
+    public float Accuracy = 0f;
+
     // This is if the win condition for the level has been achieved yet or not
     [HideInInspector]
     public bool WinConditionAchieved = false;
 
+    // This is the actual particle system steam that appears when the steam ball is triggered.
     private Steam_Screen Steam_Screen;
 
     private int randomNumber;
+
+    private GameObject Poor_Rating, Fair_Rating, Good_Rating, Excellent_Rating, Superior_Rating, Timed_End_Screen, Score_End_Screen, NotesMissedGameObject, AccuracyGameObject, HealthGoDownParticleSystem;
+
+    public bool AlreadyWonOrLost = false;
+
+    private Canvas IntroduceLevelCanvas;
+
+    private bool TimerCanDecrease = false;
 
     #endregion
 
@@ -86,6 +103,58 @@ public class Game_Controller : MonoBehaviour
         SuccessfulText = GameObject.Find("SuccessfulText").GetComponent<TextMeshProUGUI>();
 
         ScoreText = GameObject.Find("Score_Text").GetComponent<TextMeshProUGUI>();
+
+        TimeAddedText = GameObject.Find("Time_Added_Text").GetComponent<TextMeshProUGUI>();
+
+        TimeAddedText.text = "";
+
+        ScoreTextEndScreen = GameObject.Find("ScoreTextEndScreen").GetComponent<TextMeshProUGUI>();
+
+        ScoreTextEndScreen.text = "";
+
+        AccuracyText = GameObject.Find("Accuracy_Text").GetComponent<TextMeshProUGUI>();
+
+        AccuracyText.text = "";
+
+        NotesMissedText = GameObject.Find("Notes_Missed_Text").GetComponent<TextMeshProUGUI>();
+
+        NotesMissedText.text = "";
+
+        NotesMissedGameObject = GameObject.Find("Notes_Missed");
+
+        AccuracyGameObject = GameObject.Find("Accuracy");
+
+        NotesMissedGameObject.SetActive(false);
+
+        AccuracyGameObject.SetActive(false);
+
+        Poor_Rating = GameObject.Find("Poor_Rating");
+
+        Fair_Rating = GameObject.Find("Fair_Rating");
+
+        Good_Rating = GameObject.Find("Good_Rating");
+
+        Excellent_Rating = GameObject.Find("Excellent_Rating");
+
+        Superior_Rating = GameObject.Find("Superior_Rating");
+
+        Timed_End_Screen = GameObject.Find("Timed_End_Screen");
+
+        Score_End_Screen = GameObject.Find("Score_End_Screen");
+
+        Poor_Rating.SetActive(false);
+
+        Fair_Rating.SetActive(false);
+
+        Good_Rating.SetActive(false);
+
+        Excellent_Rating.SetActive(false);
+
+        Superior_Rating.SetActive(false);
+
+        Timed_End_Screen.SetActive(false);
+
+        Score_End_Screen.SetActive(false);
 
         Main_Menu_Button = GameObject.Find("Main_Menu_Button");
 
@@ -117,7 +186,29 @@ public class Game_Controller : MonoBehaviour
 
         SteamSpawn5 = GameObject.Find("SteamSpawn5").GetComponent<Transform>();
 
+        HealthNoteSpawn1 = GameObject.Find("HealthNoteSpawn1").GetComponent<Transform>();
+
+        HealthNoteSpawn2 = GameObject.Find("HealthNoteSpawn2").GetComponent<Transform>();
+
+        HealthNoteSpawn3 = GameObject.Find("HealthNoteSpawn3").GetComponent<Transform>();
+
+        HealthNoteSpawn4 = GameObject.Find("HealthNoteSpawn4").GetComponent<Transform>();
+
+        HealthNoteSpawn5 = GameObject.Find("HealthNoteSpawn5").GetComponent<Transform>();
+
+        IntroduceLevelCanvas = GameObject.Find("IntroduceLevelCanvas").GetComponent<Canvas>();
+
+        IntroduceLevelCanvas.enabled = false;
+
+        LevelText = GameObject.Find("LevelText").GetComponent<TextMeshProUGUI>();
+
+        CountdownText = GameObject.Find("CountdownText").GetComponent<TextMeshProUGUI>();
+
+        HealthGoDownParticleSystem = GameObject.Find("Health_Loss_Particle_System");
+
         #endregion
+
+        HealthGoDownParticleSystem.SetActive(false);
 
         RestartButton.SetActive(false);
 
@@ -132,16 +223,17 @@ public class Game_Controller : MonoBehaviour
         Health = HealthMax;
 
         TimeRemaining = MaxTime;
-        
-        StartCoroutine("SpawnNotes");
+
+        StartCoroutine("WaitAtBeginningOfLevel");
     }
 
     void Update()
     {
-        if ( Level_Type == 2 && !WinConditionAchieved && Health > 0 )
+        if ( Health < 0)
+            Health = 0;
+
+        if ( Level_Type == 2 && !WinConditionAchieved && Health > 0 && TimerCanDecrease )
             TimeRemaining -= Time.deltaTime;
-        //else
-            //ScoreText.text = "";
 
         if ( Level_Type == 2 && TimeRemaining > MaxTime )
             TimeRemaining = MaxTime;
@@ -151,17 +243,19 @@ public class Game_Controller : MonoBehaviour
             UpdateWinCondition();
             UpdateScoreText();
         }
-        else if ( WinConditionAchieved )
+        else if ( WinConditionAchieved && Level_Type != 2 && !AlreadyWonOrLost )
         {
-            UpdateSuccessfulText("You win! Restart or Quit?");
+            StartCoroutine("DoFinalCalculations");
+            Score_End_Screen.SetActive(true);
+            ScoreTextEndScreen.text = Score.ToString();
+        }
+        else if ( WinConditionAchieved && Level_Type == 2 && !AlreadyWonOrLost )
+        {
+            StartCoroutine("DoFinalCalculations");
+            Timed_End_Screen.SetActive(true);
+            TimeAddedText.text = ($"{TimeAdded} seconds");
         }
         
-    }
-
-    void FixedUpdate()
-    {
-        if ( !WinConditionAchieved && Health > 0 && Level_Type == 3 )
-            NoteSpeed += 0.00004f;
     }
 
     public void UpdateWinCondition()
@@ -178,6 +272,33 @@ public class Game_Controller : MonoBehaviour
         }
     }
 
+    public IEnumerator WaitAtBeginningOfLevel()
+    {
+        IntroduceLevelCanvas.enabled = true;
+        TimerCanDecrease = false;
+
+        if ( SceneManager.GetActiveScene().name == "Score_Based_Level" )
+            LevelText.text = ($"This is the Score-based level. Reach {ScoreMaximumValue} points to win the level and progress to the next level!");
+        else if ( SceneManager.GetActiveScene().name == "Time_Based_Level" )
+            LevelText.text = ($"This is the Time-based level. Survive for {MaxTime} seconds to win the level and progress to the next level!");
+        else if ( SceneManager.GetActiveScene().name == "Endless_Level" )
+            LevelText.text = ($"This is the Endless level. There is no end to this level, and the notes will continuously spawn until you run out of Health.");
+
+        for (int i = 5; i > 0; i--)
+        {
+            CountdownText.text = ($"{i}...");
+            yield return new WaitForSeconds(1);
+        }
+
+        TimerCanDecrease = true;
+
+        IntroduceLevelCanvas.enabled = false;
+
+        StartCoroutine("SpawnNotes");
+
+        yield return null;
+    }
+
     public IEnumerator SpawnNotes()
     {
         if ( Health > 0 && !WinConditionAchieved )
@@ -185,11 +306,17 @@ public class Game_Controller : MonoBehaviour
             
         yield return new WaitForSeconds(60 / BPM);
 
-        randomNumber = Random.Range(1, 7);
+        randomNumber = Random.Range(1, 8);
         
         int randomNumber2 = Random.Range(1, 6);
 
         GameObject SteamScreenClone = GameObject.Find("Steamscreen(Clone)");
+
+        
+        if ( ( GameObject.FindWithTag("HealthNote") != null && randomNumber == 7 ) || Health == HealthMax )
+        {
+            randomNumber = Random.Range(1, 7);
+        }
 
         // This ensures that the game doesn't spawn two Steam objects at the same time in the world or that the Steam screen is currently active.
         if ( ( GameObject.FindWithTag("Steam") != null && randomNumber == 6 ) || ( (SteamScreenClone != null && SteamScreenClone.activeInHierarchy) && randomNumber == 6 ) )
@@ -217,7 +344,7 @@ public class Game_Controller : MonoBehaviour
                 Instantiate(Notes[4], NoteSpawn5);
                 break;
 
-            default:
+            case 6:
                 switch ( randomNumber2 )
                 {
                     case 1:
@@ -237,27 +364,129 @@ public class Game_Controller : MonoBehaviour
                         break;
                 }
                 break;
+
+            default:
+                Debug.Log("Spawning health note");
+                switch ( randomNumber2 )
+                {
+                    case 1:
+                        Instantiate(Notes[5], HealthNoteSpawn1);
+                        break;
+                    case 2:
+                        Instantiate(Notes[5], HealthNoteSpawn2);
+                        break;
+                    case 3:
+                        Instantiate(Notes[5], HealthNoteSpawn3);
+                        break;
+                    case 4:
+                        Instantiate(Notes[5], HealthNoteSpawn4);
+                        break;
+                    default:
+                        Instantiate(Notes[5], HealthNoteSpawn5);
+                        break;
+                }
+                break;
                 
         }
-
 
         if ( Health > 0 && !WinConditionAchieved )
             StartCoroutine("SpawnNotes");
         }
     }
 
-    public void ChangeHealth(int value)
+    void LateUpdate()
     {
-        Health += value;
+        Accuracy = Mathf.Round(( 100 * ( (float) SuccessfulNotes / (float) (NotesMissed + SuccessfulNotes) ) ));
+                
+    }
 
-        if ( Health > 0 && value < 0 )
-            HealthBarFill.fillAmount -= (1f / HealthMax);
-        else if ( Health > 0 && value > 0 )
-            HealthBarFill.fillAmount += (1f / HealthMax);
-        else if ( Health == 0 )
+    public IEnumerator HealthParticleEffect()
+    {
+        if (!HealthGoDownParticleSystem.activeInHierarchy)
         {
+            if (HealthGoDownParticleSystem != null)
+                HealthGoDownParticleSystem?.SetActive(true);
+            yield return new WaitForSeconds(0.5f);
+            if (HealthGoDownParticleSystem != null)
+                HealthGoDownParticleSystem?.SetActive(false);
+        }
+        yield return null;
+    }
+
+    public IEnumerator ChangeHealth(float value)
+    {
+        StartCoroutine("HealthParticleEffect");
+        
+        for (int i = 0; i < Mathf.Abs(value * 30 ); i++)
+        {
+            Health += value / 30;
+            HealthBarFill.fillAmount = (float) Health / (float) HealthMax;
+            yield return null;
+        }
+        Health = Mathf.Round(Health);
+                    
+        if ( Health <= 0 && Level_Type != 2 )
+        {
+            StartCoroutine("DoFinalCalculations");
+            ScoreTextEndScreen.text = Score.ToString();
+            Score_End_Screen.SetActive(true);
+            yield return null;
+        }
+        else if ( Health <= 0 && Level_Type == 2 )
+        {
+            StartCoroutine("DoFinalCalculations");
+            TimeAddedText.text = TimeAddedText.text = ($"{TimeAdded} seconds");
+            Timed_End_Screen.SetActive(true);
+            yield return null;
+        }
+        yield return null;
+    }
+
+    public IEnumerator DoFinalCalculations()
+    {
+        yield return new WaitForSeconds(0.001f);
+        AlreadyWonOrLost = true;
+
+        NotesMissedGameObject.SetActive(true);
+        AccuracyGameObject.SetActive(true);
+        RestartButton.SetActive(true);
+        QuitButton.SetActive(true);
+        BackButton.SetActive(true);
+        if ( Health <= 0 )
             HealthBarFill.fillAmount = 0;
-            UpdateSuccessfulText("You lost. Restart, Return to Map, or Quit?");
+        AccuracyText.text = ($"{Accuracy}%");
+        NotesMissedText.text = ($"{NotesMissed} / {NotesMissed + SuccessfulNotes}");
+        CalculateRating();
+
+        yield return null;
+    }
+
+    public void CalculateRating()
+    {
+        if ( Accuracy >= 100 )
+        {
+            GameObject.Find("Superior").GetComponent<AudioSource>().Play();
+            Superior_Rating.SetActive(true);
+        }
+        else if ( Accuracy >= 90 )
+        {
+            GameObject.Find("Excellent").GetComponent<AudioSource>().Play();
+            Excellent_Rating.SetActive(true);
+        }
+        else if ( Accuracy >= 80 )
+        {
+            GameObject.Find("Good").GetComponent<AudioSource>().Play();
+            Good_Rating.SetActive(true);
+        }
+        else if ( Accuracy >= 70 )
+        {
+            GameObject.Find("Fair").GetComponent<AudioSource>().Play();
+            Fair_Rating.SetActive(true);
+        }
+        else
+        {
+            GameObject.Find("Poor").GetComponent<AudioSource>().Play();
+            Poor_Rating.SetActive(true);
         }
     }
 
@@ -309,7 +538,12 @@ public class Game_Controller : MonoBehaviour
     public void Back()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene("Map_Scene");
+    }
+
+    public void MainMenu()
+    {
+        SceneManager.LoadScene("Main_Menu");
     }
 
     public void PlayMissSFX()

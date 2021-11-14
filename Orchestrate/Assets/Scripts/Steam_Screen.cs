@@ -27,7 +27,7 @@ public class Steam_Screen : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other) //Make sure to put this out of Voids
     {
-        if (other.gameObject.tag == "Steam")
+        if ( other != null && other.gameObject.tag == "Steam" )
         {
             Destroy(other.gameObject);
             Destroy(Instantiate(GameController.SteamScreen), SteamScreenDuration);
